@@ -1,0 +1,395 @@
+[
+  {
+    "name": "handbook_pdf",
+    "max_chars": 1200,
+    "overlap_chars": 200,
+    "pages": [
+      {
+        "page_number": 1,
+        "text": "Bölüm 1 — Çalışma Saatleri ve Uzaktan Çalışma\nBu el kitabı, Örnek Teknoloji A.Ş. çalışanları için hazırlanmış kurgusal bir belgedir.\nStandart çalışma saatleri hafta içi 09:00 ile 18:00 arasındadır. Öğle arası 12:30 ile 13:30\narasında bir saattir.\nÇalışanlar haftada en fazla iki gün uzaktan çalışabilir. Uzaktan çalışma günleri bir önceki\nhaftanın cuma gününe kadar yöneticiye bildirilmelidir.\nEsnek çalışma kapsamında mesaiye en erken 08:00, en geç 10:00 saatinde başlanabilir.\nGünlük çalışma süresi her durumda dokuz saati doldurmalıdır.\n"
+      },
+      {
+        "page_number": 2,
+        "text": "Bölüm 2 — Yıllık İzin ve Mazeret İzinleri\nBir yıldan beş yıla kadar kıdemi olan çalışanlara yılda 14 iş günü ücretli izin verilir. Beş\nyıldan fazla kıdemi olanlar 20 iş günü izin hakkına sahiptir.\nİzin talepleri en az on iş günü önceden İnsan Kaynakları portalı üzerinden yapılır. Onay\nsüresi en fazla beş iş günüdür.\nEvlenme durumunda üç gün, çocuk doğumu halinde babalara beş gün mazeret izni verilir.\nBirinci derece yakının vefatında üç gün izin kullanılır.\nKullanılmayan yıllık izinlerin en fazla beş günü bir sonraki yıla devredilebilir.\n"
+      },
+      {
+        "page_number": 3,
+        "text": "Bölüm 3 — Masraflar ve Ekipman\nŞirket adına yapılan masraflar, fatura veya fişle birlikte en geç 30 gün içinde masraf\nsistemine girilmelidir.\nYurt içi seyahatlerde günlük yemek harcırahı 750 TL, yurt dışı seyahatlerde 60 Euro'dur.\nKonaklama için önceden onay alınması zorunludur.\nHer çalışana bir dizüstü bilgisayar ve bir adet harici monitör verilir. Ekipman arızaları BT\ndestek hattına 4455 dahili numarasından bildirilir.\nUzaktan çalışan personele yılda bir kez 3.000 TL'ye kadar ev ofisi ekipman desteği\nsağlanır.\n"
+      }
+    ],
+    "expected": [
+      {
+        "index": 0,
+        "page_number": 1,
+        "content": "Bölüm 1 — Çalışma Saatleri ve Uzaktan Çalışma\nBu el kitabı, Örnek Teknoloji A.Ş. çalışanları için hazırlanmış kurgusal bir belgedir.\nStandart çalışma saatleri hafta içi 09:00 ile 18:00 arasındadır.\nÖğle arası 12:30 ile 13:30 arasında bir saattir.\nÇalışanlar haftada en fazla iki gün uzaktan çalışabilir.\nUzaktan çalışma günleri bir önceki haftanın cuma gününe kadar yöneticiye bildirilmelidir.\nEsnek çalışma kapsamında mesaiye en erken 08:00, en geç 10:00 saatinde başlanabilir.\nGünlük çalışma süresi her durumda dokuz saati doldurmalıdır."
+      },
+      {
+        "index": 1,
+        "page_number": 2,
+        "content": "Bölüm 2 — Yıllık İzin ve Mazeret İzinleri\nBir yıldan beş yıla kadar kıdemi olan çalışanlara yılda 14 iş günü ücretli izin verilir.\nBeş yıldan fazla kıdemi olanlar 20 iş günü izin hakkına sahiptir.\nİzin talepleri en az on iş günü önceden İnsan Kaynakları portalı üzerinden yapılır.\nOnay süresi en fazla beş iş günüdür.\nEvlenme durumunda üç gün, çocuk doğumu halinde babalara beş gün mazeret izni verilir.\nBirinci derece yakının vefatında üç gün izin kullanılır.\nKullanılmayan yıllık izinlerin en fazla beş günü bir sonraki yıla devredilebilir."
+      },
+      {
+        "index": 2,
+        "page_number": 3,
+        "content": "Bölüm 3 — Masraflar ve Ekipman\nŞirket adına yapılan masraflar, fatura veya fişle birlikte en geç 30 gün içinde masraf sistemine girilmelidir.\nYurt içi seyahatlerde günlük yemek harcırahı 750 TL, yurt dışı seyahatlerde 60 Euro'dur.\nKonaklama için önceden onay alınması zorunludur.\nHer çalışana bir dizüstü bilgisayar ve bir adet harici monitör verilir.\nEkipman arızaları BT destek hattına 4455 dahili numarasından bildirilir.\nUzaktan çalışan personele yılda bir kez 3.000 TL'ye kadar ev ofisi ekipman desteği sağlanır."
+      }
+    ]
+  },
+  {
+    "name": "handbook_pdf_small",
+    "max_chars": 160,
+    "overlap_chars": 60,
+    "pages": [
+      {
+        "page_number": 1,
+        "text": "Bölüm 1 — Çalışma Saatleri ve Uzaktan Çalışma\nBu el kitabı, Örnek Teknoloji A.Ş. çalışanları için hazırlanmış kurgusal bir belgedir.\nStandart çalışma saatleri hafta içi 09:00 ile 18:00 arasındadır. Öğle arası 12:30 ile 13:30\narasında bir saattir.\nÇalışanlar haftada en fazla iki gün uzaktan çalışabilir. Uzaktan çalışma günleri bir önceki\nhaftanın cuma gününe kadar yöneticiye bildirilmelidir.\nEsnek çalışma kapsamında mesaiye en erken 08:00, en geç 10:00 saatinde başlanabilir.\nGünlük çalışma süresi her durumda dokuz saati doldurmalıdır.\n"
+      },
+      {
+        "page_number": 2,
+        "text": "Bölüm 2 — Yıllık İzin ve Mazeret İzinleri\nBir yıldan beş yıla kadar kıdemi olan çalışanlara yılda 14 iş günü ücretli izin verilir. Beş\nyıldan fazla kıdemi olanlar 20 iş günü izin hakkına sahiptir.\nİzin talepleri en az on iş günü önceden İnsan Kaynakları portalı üzerinden yapılır. Onay\nsüresi en fazla beş iş günüdür.\nEvlenme durumunda üç gün, çocuk doğumu halinde babalara beş gün mazeret izni verilir.\nBirinci derece yakının vefatında üç gün izin kullanılır.\nKullanılmayan yıllık izinlerin en fazla beş günü bir sonraki yıla devredilebilir.\n"
+      },
+      {
+        "page_number": 3,
+        "text": "Bölüm 3 — Masraflar ve Ekipman\nŞirket adına yapılan masraflar, fatura veya fişle birlikte en geç 30 gün içinde masraf\nsistemine girilmelidir.\nYurt içi seyahatlerde günlük yemek harcırahı 750 TL, yurt dışı seyahatlerde 60 Euro'dur.\nKonaklama için önceden onay alınması zorunludur.\nHer çalışana bir dizüstü bilgisayar ve bir adet harici monitör verilir. Ekipman arızaları BT\ndestek hattına 4455 dahili numarasından bildirilir.\nUzaktan çalışan personele yılda bir kez 3.000 TL'ye kadar ev ofisi ekipman desteği\nsağlanır.\n"
+      }
+    ],
+    "expected": [
+      {
+        "index": 0,
+        "page_number": 1,
+        "content": "Bölüm 1 — Çalışma Saatleri ve Uzaktan Çalışma\nBu el kitabı, Örnek Teknoloji A.Ş. çalışanları için hazırlanmış kurgusal bir belgedir."
+      },
+      {
+        "index": 1,
+        "page_number": 1,
+        "content": "Standart çalışma saatleri hafta içi 09:00 ile 18:00 arasındadır.\nÖğle arası 12:30 ile 13:30 arasında bir saattir."
+      },
+      {
+        "index": 2,
+        "page_number": 1,
+        "content": "Öğle arası 12:30 ile 13:30 arasında bir saattir.\nÇalışanlar haftada en fazla iki gün uzaktan çalışabilir."
+      },
+      {
+        "index": 3,
+        "page_number": 1,
+        "content": "Çalışanlar haftada en fazla iki gün uzaktan çalışabilir.\nUzaktan çalışma günleri bir önceki haftanın cuma gününe kadar yöneticiye bildirilmelidir."
+      },
+      {
+        "index": 4,
+        "page_number": 1,
+        "content": "Esnek çalışma kapsamında mesaiye en erken 08:00, en geç 10:00 saatinde başlanabilir.\nGünlük çalışma süresi her durumda dokuz saati doldurmalıdır."
+      },
+      {
+        "index": 5,
+        "page_number": 2,
+        "content": "Bölüm 2 — Yıllık İzin ve Mazeret İzinleri\nBir yıldan beş yıla kadar kıdemi olan çalışanlara yılda 14 iş günü ücretli izin verilir."
+      },
+      {
+        "index": 6,
+        "page_number": 2,
+        "content": "Beş yıldan fazla kıdemi olanlar 20 iş günü izin hakkına sahiptir.\nİzin talepleri en az on iş günü önceden İnsan Kaynakları portalı üzerinden yapılır."
+      },
+      {
+        "index": 7,
+        "page_number": 2,
+        "content": "Onay süresi en fazla beş iş günüdür.\nEvlenme durumunda üç gün, çocuk doğumu halinde babalara beş gün mazeret izni verilir."
+      },
+      {
+        "index": 8,
+        "page_number": 2,
+        "content": "Birinci derece yakının vefatında üç gün izin kullanılır.\nKullanılmayan yıllık izinlerin en fazla beş günü bir sonraki yıla devredilebilir."
+      },
+      {
+        "index": 9,
+        "page_number": 3,
+        "content": "Bölüm 3 — Masraflar ve Ekipman\nŞirket adına yapılan masraflar, fatura veya fişle birlikte en geç 30 gün içinde masraf sistemine girilmelidir."
+      },
+      {
+        "index": 10,
+        "page_number": 3,
+        "content": "Yurt içi seyahatlerde günlük yemek harcırahı 750 TL, yurt dışı seyahatlerde 60 Euro'dur.\nKonaklama için önceden onay alınması zorunludur."
+      },
+      {
+        "index": 11,
+        "page_number": 3,
+        "content": "Konaklama için önceden onay alınması zorunludur.\nHer çalışana bir dizüstü bilgisayar ve bir adet harici monitör verilir."
+      },
+      {
+        "index": 12,
+        "page_number": 3,
+        "content": "Ekipman arızaları BT destek hattına 4455 dahili numarasından bildirilir."
+      },
+      {
+        "index": 13,
+        "page_number": 3,
+        "content": "Uzaktan çalışan personele yılda bir kez 3.000 TL'ye kadar ev ofisi ekipman desteği sağlanır."
+      }
+    ]
+  },
+  {
+    "name": "table_rows",
+    "max_chars": 180,
+    "overlap_chars": 90,
+    "pages": [
+      {
+        "page_number": 4,
+        "text": "Kurum Alan Kontenjan Ülkeler Kadro\n2025848 20258059 MSB- 6G VE ÖTESİ 2 EA/SAY ABD, İsviçre, Almanya, Fransa Mühendis\n2025849 20258060 MSB- OTONOM SİSTEMLER 1 EA/SAY ABD, Japonya, Almanya Mühendis\n2025850 20258063 MSB- KİMYASAL SAVUNMA 1 EA/SAY ABD, Kanada, İsviçre Mühendis"
+      }
+    ],
+    "expected": [
+      {
+        "index": 0,
+        "page_number": 4,
+        "content": "Kurum Alan Kontenjan Ülkeler Kadro\n2025848 20258059 MSB- 6G VE ÖTESİ 2 EA/SAY ABD, İsviçre, Almanya, Fransa Mühendis"
+      },
+      {
+        "index": 1,
+        "page_number": 4,
+        "content": "2025848 20258059 MSB- 6G VE ÖTESİ 2 EA/SAY ABD, İsviçre, Almanya, Fransa Mühendis\n2025849 20258060 MSB- OTONOM SİSTEMLER 1 EA/SAY ABD, Japonya, Almanya Mühendis"
+      },
+      {
+        "index": 2,
+        "page_number": 4,
+        "content": "2025849 20258060 MSB- OTONOM SİSTEMLER 1 EA/SAY ABD, Japonya, Almanya Mühendis\n2025850 20258063 MSB- KİMYASAL SAVUNMA 1 EA/SAY ABD, Kanada, İsviçre Mühendis"
+      }
+    ]
+  },
+  {
+    "name": "abbreviations",
+    "max_chars": 80,
+    "overlap_chars": 30,
+    "pages": [
+      {
+        "page_number": 1,
+        "text": "Toplantıya Prof. Dr. Ayşe Yılmaz katılacak. Belgeyi T.C. Kimlik no. ile doldurun. Örnek A.Ş. adına M. Kaya imzalar. Kural 3. maddede yazılıdır. Kırtasiye vb. giderler ödenir! Soru var mı? Evet."
+      }
+    ],
+    "expected": [
+      {
+        "index": 0,
+        "page_number": 1,
+        "content": "Toplantıya Prof. Dr. Ayşe Yılmaz katılacak."
+      },
+      {
+        "index": 1,
+        "page_number": 1,
+        "content": "Belgeyi T.C. Kimlik no. ile doldurun.\nÖrnek A.Ş. adına M. Kaya imzalar."
+      },
+      {
+        "index": 2,
+        "page_number": 1,
+        "content": "Kural 3. maddede yazılıdır.\nKırtasiye vb. giderler ödenir!\nSoru var mı?\nEvet."
+      }
+    ]
+  },
+  {
+    "name": "wrapping_and_hyphenation",
+    "max_chars": 1200,
+    "overlap_chars": 200,
+    "pages": [
+      {
+        "page_number": 2,
+        "text": "Sözleş-\nmenin süresi bir\nyıldır.\r\n\r\n  \nYeni   paragraf\f burada.\nşirket ISPARTA ofisi\nİstanbul şubesi"
+      }
+    ],
+    "expected": [
+      {
+        "index": 0,
+        "page_number": 2,
+        "content": "Sözleşmenin süresi bir yıldır.\nYeni paragraf burada. şirket ISPARTA ofisi\nİstanbul şubesi"
+      }
+    ]
+  },
+  {
+    "name": "long_sentence_and_word",
+    "max_chars": 40,
+    "overlap_chars": 10,
+    "pages": [
+      {
+        "page_number": 1,
+        "text": "kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime. aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    ],
+    "expected": [
+      {
+        "index": 0,
+        "page_number": 1,
+        "content": "kelime kelime kelime kelime kelime"
+      },
+      {
+        "index": 1,
+        "page_number": 1,
+        "content": "kelime kelime kelime kelime kelime"
+      },
+      {
+        "index": 2,
+        "page_number": 1,
+        "content": "kelime kelime kelime kelime kelime"
+      },
+      {
+        "index": 3,
+        "page_number": 1,
+        "content": "kelime kelime kelime kelime kelime"
+      },
+      {
+        "index": 4,
+        "page_number": 1,
+        "content": "kelime kelime kelime kelime kelime"
+      },
+      {
+        "index": 5,
+        "page_number": 1,
+        "content": "kelime kelime kelime kelime kelime"
+      },
+      {
+        "index": 6,
+        "page_number": 1,
+        "content": "kelime kelime kelime kelime kelime"
+      },
+      {
+        "index": 7,
+        "page_number": 1,
+        "content": "kelime kelime kelime kelime kelime"
+      },
+      {
+        "index": 8,
+        "page_number": 1,
+        "content": "kelime kelime kelime kelime kelime"
+      },
+      {
+        "index": 9,
+        "page_number": 1,
+        "content": "kelime kelime kelime kelime kelime"
+      },
+      {
+        "index": 10,
+        "page_number": 1,
+        "content": "kelime kelime kelime kelime kelime"
+      },
+      {
+        "index": 11,
+        "page_number": 1,
+        "content": "kelime kelime kelime kelime kelime."
+      },
+      {
+        "index": 12,
+        "page_number": 1,
+        "content": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "index": 13,
+        "page_number": 1,
+        "content": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      {
+        "index": 14,
+        "page_number": 1,
+        "content": "aaaaaaaaaaaaaaa"
+      }
+    ]
+  },
+  {
+    "name": "many_sentences_overlap",
+    "max_chars": 200,
+    "overlap_chars": 60,
+    "pages": [
+      {
+        "page_number": 3,
+        "text": "Bu 00 numaralı cümle yeterince uzun bir örnek metindir. Bu 01 numaralı cümle yeterince uzun bir örnek metindir. Bu 02 numaralı cümle yeterince uzun bir örnek metindir. Bu 03 numaralı cümle yeterince uzun bir örnek metindir. Bu 04 numaralı cümle yeterince uzun bir örnek metindir. Bu 05 numaralı cümle yeterince uzun bir örnek metindir. Bu 06 numaralı cümle yeterince uzun bir örnek metindir. Bu 07 numaralı cümle yeterince uzun bir örnek metindir. Bu 08 numaralı cümle yeterince uzun bir örnek metindir. Bu 09 numaralı cümle yeterince uzun bir örnek metindir. Bu 10 numaralı cümle yeterince uzun bir örnek metindir. Bu 11 numaralı cümle yeterince uzun bir örnek metindir. Bu 12 numaralı cümle yeterince uzun bir örnek metindir. Bu 13 numaralı cümle yeterince uzun bir örnek metindir. Bu 14 numaralı cümle yeterince uzun bir örnek metindir. Bu 15 numaralı cümle yeterince uzun bir örnek metindir. Bu 16 numaralı cümle yeterince uzun bir örnek metindir. Bu 17 numaralı cümle yeterince uzun bir örnek metindir. Bu 18 numaralı cümle yeterince uzun bir örnek metindir. Bu 19 numaralı cümle yeterince uzun bir örnek metindir. Bu 20 numaralı cümle yeterince uzun bir örnek metindir. Bu 21 numaralı cümle yeterince uzun bir örnek metindir. Bu 22 numaralı cümle yeterince uzun bir örnek metindir. Bu 23 numaralı cümle yeterince uzun bir örnek metindir. Bu 24 numaralı cümle yeterince uzun bir örnek metindir. Bu 25 numaralı cümle yeterince uzun bir örnek metindir. Bu 26 numaralı cümle yeterince uzun bir örnek metindir. Bu 27 numaralı cümle yeterince uzun bir örnek metindir. Bu 28 numaralı cümle yeterince uzun bir örnek metindir. Bu 29 numaralı cümle yeterince uzun bir örnek metindir."
+      }
+    ],
+    "expected": [
+      {
+        "index": 0,
+        "page_number": 3,
+        "content": "Bu 00 numaralı cümle yeterince uzun bir örnek metindir.\nBu 01 numaralı cümle yeterince uzun bir örnek metindir.\nBu 02 numaralı cümle yeterince uzun bir örnek metindir."
+      },
+      {
+        "index": 1,
+        "page_number": 3,
+        "content": "Bu 02 numaralı cümle yeterince uzun bir örnek metindir.\nBu 03 numaralı cümle yeterince uzun bir örnek metindir.\nBu 04 numaralı cümle yeterince uzun bir örnek metindir."
+      },
+      {
+        "index": 2,
+        "page_number": 3,
+        "content": "Bu 04 numaralı cümle yeterince uzun bir örnek metindir.\nBu 05 numaralı cümle yeterince uzun bir örnek metindir.\nBu 06 numaralı cümle yeterince uzun bir örnek metindir."
+      },
+      {
+        "index": 3,
+        "page_number": 3,
+        "content": "Bu 06 numaralı cümle yeterince uzun bir örnek metindir.\nBu 07 numaralı cümle yeterince uzun bir örnek metindir.\nBu 08 numaralı cümle yeterince uzun bir örnek metindir."
+      },
+      {
+        "index": 4,
+        "page_number": 3,
+        "content": "Bu 08 numaralı cümle yeterince uzun bir örnek metindir.\nBu 09 numaralı cümle yeterince uzun bir örnek metindir.\nBu 10 numaralı cümle yeterince uzun bir örnek metindir."
+      },
+      {
+        "index": 5,
+        "page_number": 3,
+        "content": "Bu 10 numaralı cümle yeterince uzun bir örnek metindir.\nBu 11 numaralı cümle yeterince uzun bir örnek metindir.\nBu 12 numaralı cümle yeterince uzun bir örnek metindir."
+      },
+      {
+        "index": 6,
+        "page_number": 3,
+        "content": "Bu 12 numaralı cümle yeterince uzun bir örnek metindir.\nBu 13 numaralı cümle yeterince uzun bir örnek metindir.\nBu 14 numaralı cümle yeterince uzun bir örnek metindir."
+      },
+      {
+        "index": 7,
+        "page_number": 3,
+        "content": "Bu 14 numaralı cümle yeterince uzun bir örnek metindir.\nBu 15 numaralı cümle yeterince uzun bir örnek metindir.\nBu 16 numaralı cümle yeterince uzun bir örnek metindir."
+      },
+      {
+        "index": 8,
+        "page_number": 3,
+        "content": "Bu 16 numaralı cümle yeterince uzun bir örnek metindir.\nBu 17 numaralı cümle yeterince uzun bir örnek metindir.\nBu 18 numaralı cümle yeterince uzun bir örnek metindir."
+      },
+      {
+        "index": 9,
+        "page_number": 3,
+        "content": "Bu 18 numaralı cümle yeterince uzun bir örnek metindir.\nBu 19 numaralı cümle yeterince uzun bir örnek metindir.\nBu 20 numaralı cümle yeterince uzun bir örnek metindir."
+      },
+      {
+        "index": 10,
+        "page_number": 3,
+        "content": "Bu 20 numaralı cümle yeterince uzun bir örnek metindir.\nBu 21 numaralı cümle yeterince uzun bir örnek metindir.\nBu 22 numaralı cümle yeterince uzun bir örnek metindir."
+      },
+      {
+        "index": 11,
+        "page_number": 3,
+        "content": "Bu 22 numaralı cümle yeterince uzun bir örnek metindir.\nBu 23 numaralı cümle yeterince uzun bir örnek metindir.\nBu 24 numaralı cümle yeterince uzun bir örnek metindir."
+      },
+      {
+        "index": 12,
+        "page_number": 3,
+        "content": "Bu 24 numaralı cümle yeterince uzun bir örnek metindir.\nBu 25 numaralı cümle yeterince uzun bir örnek metindir.\nBu 26 numaralı cümle yeterince uzun bir örnek metindir."
+      },
+      {
+        "index": 13,
+        "page_number": 3,
+        "content": "Bu 26 numaralı cümle yeterince uzun bir örnek metindir.\nBu 27 numaralı cümle yeterince uzun bir örnek metindir.\nBu 28 numaralı cümle yeterince uzun bir örnek metindir."
+      },
+      {
+        "index": 14,
+        "page_number": 3,
+        "content": "Bu 28 numaralı cümle yeterince uzun bir örnek metindir.\nBu 29 numaralı cümle yeterince uzun bir örnek metindir."
+      }
+    ]
+  },
+  {
+    "name": "empty_pages",
+    "max_chars": 1200,
+    "overlap_chars": 200,
+    "pages": [
+      {
+        "page_number": 1,
+        "text": "  \n "
+      },
+      {
+        "page_number": 2,
+        "text": ""
+      }
+    ],
+    "expected": []
+  }
+]
