@@ -3,9 +3,9 @@ name: ai
 on:
   push:
     branches: [main]
-    paths: ["ai/**", ".github/workflows/ai.yml"]
+    paths: ["ai/**", "fixtures/**", "samples/**", ".github/workflows/ai.yml"]
   pull_request:
-    paths: ["ai/**", ".github/workflows/ai.yml"]
+    paths: ["ai/**", "fixtures/**", "samples/**", ".github/workflows/ai.yml"]
 
 jobs:
   lint-test:
@@ -21,5 +21,5 @@ jobs:
       - run: uv sync --frozen
       - run: uv run ruff check .
       - run: uv run ruff format --check .
-      - run: uv run mypy app tests
+      - run: uv run mypy app tests scripts
       - run: uv run pytest
