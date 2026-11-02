@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Quarry.Gateway/Quarry.Gateway.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Quarry.Gateway.Tests/Quarry.Gateway.Tests.csproj" />
+  </Folder>
+</Solution>
