@@ -74,3 +74,20 @@ async def test_wrong_dimension_raises_provider_error() -> None:
 
     with pytest.raises(ProviderError, match="dimensions"):
         await make_embedder(httpx.MockTransport(handler), dimensions=1024).embed(["metin"])
+
+
+async def test_missing_api_key_fails_fast_with_clear_message() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        raise AssertionError("no request expected")
+
+    embedder = OpenRouterEmbedder(
+        client=httpx.AsyncClient(transport=httpx.MockTransport(handler)),
+        base_url="https://openrouter.test/api/v1",
+        api_key="",
+        model="baai/bge-m3",
+        dimensions=3,
+        batch_size=2,
+    )
+
+    with pytest.raises(ProviderError, match="OPENROUTER_API_KEY is not configured"):
+        await embedder.embed(["metin"])

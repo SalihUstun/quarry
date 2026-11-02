@@ -6,7 +6,7 @@ from typing import Any, Protocol
 
 import httpx
 
-from app.llm.types import ProviderError, Usage
+from app.llm.types import ProviderError, Usage, require_api_key
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,12 +31,14 @@ class OpenRouterEmbedder:
     ) -> None:
         self._client = client
         self._url = f"{base_url.rstrip('/')}/embeddings"
+        self._api_key = api_key
         self._headers = {"Authorization": f"Bearer {api_key}"}
         self._model = model
         self._dimensions = dimensions
         self._batch_size = batch_size
 
     async def embed(self, texts: Sequence[str]) -> EmbeddingResult:
+        require_api_key(self._api_key)
         started = time.perf_counter()
         vectors: list[list[float]] = []
         input_tokens = 0

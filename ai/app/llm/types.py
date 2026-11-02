@@ -7,6 +7,14 @@ class ProviderError(Exception):
     pass
 
 
+MISSING_API_KEY_MESSAGE = "OPENROUTER_API_KEY is not configured"
+
+
+def require_api_key(api_key: str) -> None:
+    if not api_key:
+        raise ProviderError(MISSING_API_KEY_MESSAGE)
+
+
 @dataclass(frozen=True, slots=True)
 class Usage:
     provider: str

@@ -6,7 +6,15 @@ from typing import Any, Protocol
 
 import httpx
 
-from app.llm.types import ChatEvent, ChatMessage, ProviderError, TextDelta, Usage, UsageReport
+from app.llm.types import (
+    ChatEvent,
+    ChatMessage,
+    ProviderError,
+    TextDelta,
+    Usage,
+    UsageReport,
+    require_api_key,
+)
 
 
 class ChatModel(Protocol):
@@ -31,10 +39,12 @@ class OpenRouterChatModel:
     def __init__(self, client: httpx.AsyncClient, base_url: str, api_key: str, model: str) -> None:
         self._client = client
         self._url = f"{base_url.rstrip('/')}/chat/completions"
+        self._api_key = api_key
         self._headers = {"Authorization": f"Bearer {api_key}"}
         self._model = model
 
     async def stream(self, messages: Sequence[ChatMessage]) -> AsyncIterator[ChatEvent]:
+        require_api_key(self._api_key)
         started = time.perf_counter()
         body = {
             "model": self._model,
