@@ -203,6 +203,60 @@ mod tests {
         );
     }
 
+    fn pdfium_from_env() -> Option<Pdfium> {
+        let directory = std::env::var("PDFIUM_LIBRARY_DIR").ok()?;
+        let bindings =
+            Pdfium::bind_to_library(Pdfium::pdfium_platform_library_name_at_path(&directory))
+                .expect("PDFIUM_LIBRARY_DIR points to a loadable PDFium library");
+        Some(Pdfium::new(bindings))
+    }
+
+    fn repository_file(relative: &str) -> std::path::PathBuf {
+        Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("../../..")
+            .join(relative)
+    }
+
+    #[test]
+    fn extracts_sample_pdf_pages_with_pdfium() {
+        let Some(pdfium) = pdfium_from_env() else {
+            eprintln!("PDFIUM_LIBRARY_DIR is not set, skipping PDFium test");
+            return;
+        };
+
+        let pages = extract_pages(
+            &pdfium,
+            &repository_file("samples/calisan-el-kitabi.pdf"),
+            PDF,
+        )
+        .expect("sample PDF is readable");
+
+        assert_eq!(
+            pages
+                .iter()
+                .map(|page| page.page_number)
+                .collect::<Vec<_>>(),
+            [1, 2, 3]
+        );
+        assert!(pages[0].text.contains("uzaktan çalışabilir"));
+        assert!(pages[1].text.contains("14 iş günü"));
+        assert!(pages[2].text.contains("750 TL"));
+    }
+
+    #[test]
+    fn corrupt_pdf_is_an_extraction_error() {
+        let Some(pdfium) = pdfium_from_env() else {
+            return;
+        };
+        let path = std::env::temp_dir().join(format!("quarry-corrupt-{}.pdf", std::process::id()));
+        std::fs::write(&path, b"%PDF-1.7 broken").expect("write temp file");
+
+        let result = extract_pages(&pdfium, &path, PDF);
+
+        std::fs::remove_file(&path).ok();
+        assert!(matches!(result, Err(ProcessError::Extraction(_))));
+    }
+
     #[test]
     fn non_docx_archive_is_an_extraction_error() {
         let result = extract_docx(Cursor::new(b"not a zip".to_vec()));
