@@ -79,7 +79,7 @@ def _pack(sentences: Sequence[str], config: ChunkingConfig) -> list[str]:
     length = 0
     for sentence in sentences:
         if current and length + 1 + len(sentence) > config.max_chars:
-            packed.append(" ".join(current))
+            packed.append("\n".join(current))
             current = _overlap_tail(current, config.overlap_chars)
             length = _joined_length(current)
             if current and length + 1 + len(sentence) > config.max_chars:
@@ -87,7 +87,7 @@ def _pack(sentences: Sequence[str], config: ChunkingConfig) -> list[str]:
         length += len(sentence) + (1 if current else 0)
         current.append(sentence)
     if current:
-        packed.append(" ".join(current))
+        packed.append("\n".join(current))
     return packed
 
 

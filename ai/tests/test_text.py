@@ -32,6 +32,25 @@ def test_normalize_joins_wrapped_lines_and_keeps_paragraphs() -> None:
     assert normalize_text(raw) == "Birinci satır ikinci satır.\n\nYeni paragraf burada."
 
 
+def test_normalize_keeps_line_breaks_that_do_not_continue_a_sentence() -> None:
+    raw = "2025801 AFAD Deprem 1 EA/SAY Japonya Mühendis\n2025802 AFAD Sismoloji 1 EA/SAY Almanya"
+
+    assert normalize_text(raw) == raw
+
+
+def test_normalize_trims_spaces_around_kept_line_breaks() -> None:
+    assert normalize_text("Başlık   \n   Madde 1") == "Başlık\nMadde 1"
+
+
+def test_split_sentences_treats_line_breaks_as_boundaries() -> None:
+    text = "2025801 AFAD Deprem Japonya Mühendis\n2025802 AFAD Sismoloji Almanya"
+
+    assert split_sentences(text) == [
+        "2025801 AFAD Deprem Japonya Mühendis",
+        "2025802 AFAD Sismoloji Almanya",
+    ]
+
+
 def test_split_sentences_on_terminal_punctuation() -> None:
     text = "İzin talebi yazılı yapılır. Onay süresi beş gündür! Sorular var mı? Evet."
 

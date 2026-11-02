@@ -44,9 +44,10 @@ ABBREVIATIONS = frozenset(
 _CONTROL_CHARACTERS = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
 _HYPHENATED_LINE_BREAK = re.compile(r"(\w)-\n[ \t]*([a-zçğıöşü])")
 _PARAGRAPH_BREAK = re.compile(r"\n[ \t]*\n\s*")
+_CONTINUATION_LINE_BREAK = re.compile(r"[ \t]*\n[ \t]*(?=[a-zçğıöşü])")
 _LINE_BREAK = re.compile(r"[ \t]*\n[ \t]*")
 _HORIZONTAL_WHITESPACE = re.compile(r"[ \t ]+")
-_SENTENCE_BOUNDARY = re.compile(r"[.!?…]+[\"'”’)\]]*\s+|\n\n")
+_SENTENCE_BOUNDARY = re.compile(r"[.!?…]+[\"'”’)\]]*\s+|\n+")
 _DOTTED_ABBREVIATION = re.compile(r"^(?:\w\.)+\w?$")
 _PARAGRAPH_MARKER = " "
 
@@ -61,7 +62,8 @@ def normalize_text(raw: str) -> str:
     text = _CONTROL_CHARACTERS.sub("", text)
     text = _HYPHENATED_LINE_BREAK.sub(r"\1\2", text)
     text = _PARAGRAPH_BREAK.sub(_PARAGRAPH_MARKER, text)
-    text = _LINE_BREAK.sub(" ", text)
+    text = _CONTINUATION_LINE_BREAK.sub(" ", text)
+    text = _LINE_BREAK.sub("\n", text)
     text = _HORIZONTAL_WHITESPACE.sub(" ", text)
     paragraphs = (paragraph.strip() for paragraph in text.split(_PARAGRAPH_MARKER))
     return "\n\n".join(paragraph for paragraph in paragraphs if paragraph)
@@ -80,7 +82,7 @@ def split_sentences(text: str) -> list[str]:
 
 
 def _is_sentence_end(text: str, punctuation_start: int, boundary_end: int) -> bool:
-    if text.startswith("\n\n", punctuation_start):
+    if text[punctuation_start] == "\n":
         return True
     if boundary_end < len(text) and text[boundary_end].islower():
         return False

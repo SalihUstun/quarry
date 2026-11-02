@@ -13,7 +13,7 @@ def test_short_page_becomes_single_chunk() -> None:
     chunks = chunk_pages([PageText(page_number=1, text="Kısa bir metin. İkinci cümle.")])
 
     assert len(chunks) == 1
-    assert chunks[0].content == "Kısa bir metin. İkinci cümle."
+    assert chunks[0].content == "Kısa bir metin.\nİkinci cümle."
     assert chunks[0].page_number == 1
     assert chunks[0].index == 0
 
@@ -35,7 +35,7 @@ def test_consecutive_chunks_share_overlapping_sentences() -> None:
     chunks = chunk_pages([PageText(1, text)], config)
 
     for previous, current in pairwise(chunks):
-        last_sentence_of_previous = previous.content.rsplit(". ", 1)[-1]
+        last_sentence_of_previous = previous.content.splitlines()[-1]
         assert current.content.startswith(last_sentence_of_previous)
 
 
@@ -45,7 +45,7 @@ def test_every_sentence_appears_in_some_chunk() -> None:
 
     chunks = chunk_pages([PageText(1, " ".join(sentences))], config)
 
-    combined = " ".join(chunk.content for chunk in chunks)
+    combined = "\n".join(chunk.content for chunk in chunks)
     assert all(item in combined for item in sentences)
 
 
@@ -83,3 +83,14 @@ def test_empty_pages_produce_no_chunks() -> None:
 def test_invalid_config_is_rejected(max_chars: int, overlap_chars: int) -> None:
     with pytest.raises(ValueError, match="must"):
         ChunkingConfig(max_chars=max_chars, overlap_chars=overlap_chars)
+
+
+def test_table_rows_stay_on_separate_lines_within_a_chunk() -> None:
+    rows = [
+        "2025848 20258059 MSB- 6G VE ÖTESİ 2 EA/SAY ABD, İsviçre, Almanya, Fransa Mühendis",
+        "2025849 20258060 MSB- OTONOM SİSTEMLER 1 EA/SAY ABD, Japonya, Almanya Mühendis",
+    ]
+
+    chunks = chunk_pages([PageText(4, "\n".join(rows))])
+
+    assert chunks[0].content.splitlines() == rows
