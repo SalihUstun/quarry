@@ -1,4 +1,3 @@
-from pathlib import Path
 from typing import Literal
 
 from pydantic import SecretStr
@@ -10,7 +9,6 @@ class Settings(BaseSettings):
 
     database_url: str = "postgresql://quarry:quarry@localhost:5432/quarry"
     internal_token: SecretStr = SecretStr("")
-    uploads_dir: Path = Path("/data/uploads")
 
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
     openrouter_api_key: SecretStr = SecretStr("")
@@ -26,6 +24,4 @@ class Settings(BaseSettings):
     embedding_dimensions: int = 1024
     embedding_batch_size: int = 32
 
-    chunk_max_chars: int = 1200
-    chunk_overlap_chars: int = 200
     retrieval_top_k: int = 6

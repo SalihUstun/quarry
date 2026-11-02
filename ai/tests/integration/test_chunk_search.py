@@ -1,11 +1,10 @@
 from uuid import UUID
 
+import numpy as np
 import pytest
 
 from app.db.chunks import ChunkSearch
 from app.db.database import PostgresDatabase
-from app.db.documents import DocumentRecord, DocumentStore
-from app.ingestion.chunker import Chunk
 from tests.fakes import one_hot
 from tests.integration.conftest import DEFAULT_TENANT_ID, create_document, create_tenant
 
@@ -17,29 +16,31 @@ async def store_chunks(
     tenant_id: UUID,
     file_name: str,
     positions: list[int],
-    status_after: str = "ready",
+    status: str = "ready",
 ) -> UUID:
-    document_id = await create_document(database, storage_path=file_name, tenant_id=tenant_id)
-    record = DocumentRecord(
-        id=document_id,
-        tenant_id=tenant_id,
-        file_name=file_name,
-        content_type="application/pdf",
-        storage_path=file_name,
-        uploaded_by="tester@quarry.local",
-        status="processing",
+    document_id = await create_document(
+        database, storage_path=file_name, tenant_id=tenant_id, status=status
     )
-    chunks = [
-        Chunk(index=index, page_number=index + 1, content=f"{file_name} içerik {position}")
-        for index, position in enumerate(positions)
-    ]
-    embeddings = [one_hot(position) for position in positions]
-    await DocumentStore(database).complete(record, len(chunks), chunks, embeddings)
-    if status_after != "ready":
-        async with database.connection() as connection:
-            await connection.execute(
-                "UPDATE documents SET status = %s WHERE id = %s", (status_after, document_id)
-            )
+    async with database.connection() as connection, connection.cursor() as cursor:
+        await cursor.executemany(
+            """
+            INSERT INTO chunks
+                (tenant_id, document_id, chunk_index, page_number, content, char_count, embedding)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """,
+            [
+                (
+                    tenant_id,
+                    document_id,
+                    index,
+                    index + 1,
+                    f"{file_name} içerik {position}",
+                    0,
+                    np.asarray(one_hot(position), dtype=np.float32),
+                )
+                for index, position in enumerate(positions)
+            ],
+        )
     return document_id
 
 
@@ -70,7 +71,7 @@ async def test_never_returns_chunks_of_another_tenant(database: PostgresDatabase
 
 
 async def test_skips_documents_that_are_not_ready(database: PostgresDatabase) -> None:
-    await store_chunks(database, DEFAULT_TENANT_ID, "isleniyor.pdf", [5], status_after="failed")
+    await store_chunks(database, DEFAULT_TENANT_ID, "isleniyor.pdf", [5], status="failed")
 
     results = await ChunkSearch(database).nearest(DEFAULT_TENANT_ID, one_hot(5), limit=10)
 

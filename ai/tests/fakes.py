@@ -51,12 +51,16 @@ class FakeDatabase:
         return self.reachable
 
 
-class FakeIngestor:
-    def __init__(self) -> None:
-        self.ingested: list[UUID] = []
+class FakeTextEmbedder:
+    def __init__(self, error: Exception | None = None) -> None:
+        self.error = error
+        self.calls: list[tuple[UUID, str, list[str]]] = []
 
-    async def ingest(self, document_id: UUID) -> None:
-        self.ingested.append(document_id)
+    async def embed(self, tenant_id: UUID, user_id: str, texts: Sequence[str]) -> list[list[float]]:
+        self.calls.append((tenant_id, user_id, list(texts)))
+        if self.error is not None:
+            raise self.error
+        return [one_hot(len(text)) for text in texts]
 
 
 class FakeAnswerer:
@@ -78,14 +82,14 @@ INTERNAL_TOKEN = "test-internal-token"
 
 def services_factory(
     database: FakeDatabase | None = None,
-    ingestor: FakeIngestor | None = None,
+    embeddings: FakeTextEmbedder | None = None,
     answerer: FakeAnswerer | None = None,
 ) -> Callable[[], AbstractAsyncContextManager[AppServices]]:
     @asynccontextmanager
     async def factory() -> AsyncIterator[AppServices]:
         yield AppServices(
             database=database or FakeDatabase(),
-            ingestion=ingestor or FakeIngestor(),
+            embeddings=embeddings or FakeTextEmbedder(),
             ask=answerer or FakeAnswerer(),
             internal_token=INTERNAL_TOKEN,
         )

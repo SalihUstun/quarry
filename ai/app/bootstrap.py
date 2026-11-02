@@ -7,21 +7,19 @@ import httpx
 from app.core.config import Settings
 from app.db.chunks import ChunkSearch
 from app.db.database import Database, PostgresDatabase
-from app.db.documents import DocumentStore
 from app.db.usage import UsageRepository
-from app.ingestion.chunker import ChunkingConfig
 from app.llm.chat import ChatModel, OllamaChatModel, OpenRouterChatModel
 from app.llm.embedder import OpenRouterEmbedder
 from app.llm.retry import RetryPolicy
 from app.services.ask import AskService
-from app.services.ingestion import IngestionService
-from app.services.protocols import DocumentIngestor, QuestionAnswerer
+from app.services.embeddings import EmbeddingService
+from app.services.protocols import QuestionAnswerer, TextEmbedder
 
 
 @dataclass(frozen=True, slots=True)
 class AppServices:
     database: Database
-    ingestion: DocumentIngestor
+    embeddings: TextEmbedder
     ask: QuestionAnswerer
     internal_token: str
 
@@ -58,13 +56,7 @@ async def build_services(settings: Settings) -> AsyncIterator[AppServices]:
         try:
             yield AppServices(
                 database=database,
-                ingestion=IngestionService(
-                    documents=DocumentStore(database),
-                    embedder=embedder,
-                    usage=usage,
-                    uploads_dir=settings.uploads_dir,
-                    chunking=ChunkingConfig(settings.chunk_max_chars, settings.chunk_overlap_chars),
-                ),
+                embeddings=EmbeddingService(embedder, usage),
                 ask=AskService(
                     embedder=embedder,
                     retriever=ChunkSearch(database),

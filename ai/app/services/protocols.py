@@ -1,12 +1,14 @@
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Sequence
 from typing import Protocol
 from uuid import UUID
 
 from app.services.ask import AskEvent
 
 
-class DocumentIngestor(Protocol):
-    async def ingest(self, document_id: UUID) -> None: ...
+class TextEmbedder(Protocol):
+    async def embed(
+        self, tenant_id: UUID, user_id: str, texts: Sequence[str]
+    ) -> list[list[float]]: ...
 
 
 class QuestionAnswerer(Protocol):

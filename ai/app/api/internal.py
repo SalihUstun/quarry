@@ -1,23 +1,30 @@
-from uuid import UUID
+from fastapi import APIRouter, Depends, HTTPException, status
+from pydantic import BaseModel, Field
 
-from fastapi import APIRouter, BackgroundTasks, Depends, status
-from pydantic import BaseModel
-
-from app.api.deps import ServicesDep, require_internal_token
+from app.api.deps import IdentityDep, ServicesDep, require_internal_token
+from app.llm.types import ProviderError
 
 router = APIRouter(
     prefix="/internal", tags=["internal"], dependencies=[Depends(require_internal_token)]
 )
 
 
-class IngestAccepted(BaseModel):
-    document_id: UUID
-    status: str = "accepted"
+class EmbeddingRequest(BaseModel):
+    texts: list[str] = Field(min_length=1, max_length=256)
 
 
-@router.post("/documents/{document_id}/ingest", status_code=status.HTTP_202_ACCEPTED)
-async def ingest_document(
-    document_id: UUID, background_tasks: BackgroundTasks, services: ServicesDep
-) -> IngestAccepted:
-    background_tasks.add_task(services.ingestion.ingest, document_id)
-    return IngestAccepted(document_id=document_id)
+class EmbeddingResponse(BaseModel):
+    vectors: list[list[float]]
+
+
+@router.post("/embeddings")
+async def create_embeddings(
+    request: EmbeddingRequest, identity: IdentityDep, services: ServicesDep
+) -> EmbeddingResponse:
+    try:
+        vectors = await services.embeddings.embed(
+            identity.tenant_id, identity.user_id, request.texts
+        )
+    except ProviderError as error:
+        raise HTTPException(status.HTTP_502_BAD_GATEWAY, str(error)) from error
+    return EmbeddingResponse(vectors=vectors)
