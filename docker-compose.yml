@@ -16,6 +16,20 @@ services:
       retries: 10
     restart: unless-stopped
 
+  rabbitmq:
+    image: rabbitmq:4.3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-quarry}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:?set RABBITMQ_PASSWORD in .env}
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
   migrate:
     image: ghcr.io/amacneil/dbmate:2.37.0
     environment:
@@ -34,14 +48,11 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-quarry}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-quarry}
       INTERNAL_TOKEN: ${INTERNAL_TOKEN:?set INTERNAL_TOKEN in .env}
-      UPLOADS_DIR: /data/uploads
       LLM_PROVIDER: ${LLM_PROVIDER:-openrouter}
       LLM_MODEL: ${LLM_MODEL:-z-ai/glm-5.3-flash}
       LLM_REASONING_EFFORT: ${LLM_REASONING_EFFORT:-minimal}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
-    volumes:
-      - uploads:/data/uploads:ro
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s
@@ -62,11 +73,35 @@ services:
       AiService__BaseUrl: http://ai:8000
       AiService__InternalToken: ${INTERNAL_TOKEN}
       Storage__UploadsPath: /data/uploads
+      RabbitMq__Url: amqp://${RABBITMQ_USER:-quarry}:${RABBITMQ_PASSWORD}@rabbitmq:5672
     volumes:
       - uploads:/data/uploads
     depends_on:
       migrate:
         condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
+      ai:
+        condition: service_healthy
+    restart: unless-stopped
+
+  worker:
+    build: ./rust
+    environment:
+      AMQP_URL: amqp://${RABBITMQ_USER:-quarry}:${RABBITMQ_PASSWORD}@rabbitmq:5672/%2f
+      DATABASE_URL: postgres://${POSTGRES_USER:-quarry}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-quarry}
+      AI_BASE_URL: http://ai:8000
+      INTERNAL_TOKEN: ${INTERNAL_TOKEN}
+      UPLOADS_DIR: /data/uploads
+      WORKER_CONCURRENCY: ${WORKER_CONCURRENCY:-4}
+      RUST_LOG: ${WORKER_LOG_LEVEL:-info}
+    volumes:
+      - uploads:/data/uploads:ro
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      rabbitmq:
+        condition: service_healthy
       ai:
         condition: service_healthy
     restart: unless-stopped
@@ -81,4 +116,5 @@ services:
 
 volumes:
   postgres-data:
+  rabbitmq-data:
   uploads:

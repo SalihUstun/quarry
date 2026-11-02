@@ -58,7 +58,7 @@ export function DocumentsPanel() {
         <input
           ref={inputRef}
           type="file"
-          accept=".pdf,.txt"
+          accept=".pdf,.docx,.txt"
           hidden
           aria-label="Doküman dosyası"
           onChange={handleFileChange}
@@ -68,7 +68,7 @@ export function DocumentsPanel() {
       {documents.isPending && <p className="muted">Yükleniyor…</p>}
       {documents.isError && <p role="alert">Doküman listesi alınamadı.</p>}
       {documents.data?.length === 0 && (
-        <p className="muted">Henüz doküman yok. PDF veya .txt yükleyerek başla.</p>
+        <p className="muted">Henüz doküman yok. PDF, Word veya .txt yükleyerek başla.</p>
       )}
       <ul className="document-list">
         {documents.data?.map((document) => (
