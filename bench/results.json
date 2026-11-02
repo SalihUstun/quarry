@@ -1,0 +1,36 @@
+{
+  "machine": "Darwin arm64, 3.12.15 (CPython)",
+  "runs": 5,
+  "rows": [
+    {
+      "size_mb": 1,
+      "identical_output": true,
+      "python_seconds": 0.10309808299643919,
+      "python_peak_rss_mb": 28.546875,
+      "python_chunks": 1178,
+      "rust_seconds": 0.02642075,
+      "rust_peak_rss_mb": 7.890625,
+      "rust_chunks": 1178
+    },
+    {
+      "size_mb": 10,
+      "identical_output": true,
+      "python_seconds": 1.0642678340082057,
+      "python_peak_rss_mb": 99.515625,
+      "python_chunks": 11770,
+      "rust_seconds": 0.255463709,
+      "rust_peak_rss_mb": 40.25,
+      "rust_chunks": 11770
+    },
+    {
+      "size_mb": 50,
+      "identical_output": true,
+      "python_seconds": 5.380949207989033,
+      "python_peak_rss_mb": 322.125,
+      "python_chunks": 58844,
+      "rust_seconds": 1.26383475,
+      "rust_peak_rss_mb": 181.71875,
+      "rust_chunks": 58844
+    }
+  ]
+}

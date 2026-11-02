@@ -1,6 +1,6 @@
 COMPOSE_DEV = docker compose -f docker-compose.yml -f docker-compose.dev.yml
 
-.PHONY: up dev down logs test lint test-gateway test-ai test-web test-rust lint-gateway lint-ai lint-web lint-rust fixtures migration
+.PHONY: up dev down logs test lint test-gateway test-ai test-web test-rust lint-gateway lint-ai lint-web lint-rust fixtures bench migration
 
 up:
 	docker compose up -d --build
@@ -41,6 +41,9 @@ lint-web:
 
 lint-rust:
 	cd rust && cargo fmt --all --check && cargo clippy --all-targets -- -D warnings
+
+bench:
+	ai/.venv/bin/python bench/run.py
 
 fixtures:
 	cd ai && uv run python -m scripts.generate_chunking_fixtures
