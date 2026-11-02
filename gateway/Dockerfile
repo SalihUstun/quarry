@@ -9,6 +9,7 @@ RUN dotnet publish src/Quarry.Gateway/Quarry.Gateway.csproj -c Release -o /app -
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 COPY --from=build /app ./
+RUN mkdir -p /data/uploads && chown $APP_UID /data/uploads
 USER $APP_UID
 EXPOSE 8080
 ENTRYPOINT ["dotnet", "Quarry.Gateway.dll"]

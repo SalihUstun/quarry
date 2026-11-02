@@ -10,7 +10,7 @@ public sealed class StatusEndpointTests
     [Fact]
     public async Task Health_ReturnsOk()
     {
-        await using var factory = new GatewayFactory(aiReady: true);
+        await using var factory = new GatewayFactory();
         using var client = factory.CreateClient();
 
         using var response = await client.GetAsync(new Uri("/health", UriKind.Relative));
@@ -23,7 +23,7 @@ public sealed class StatusEndpointTests
     [InlineData(false, "unavailable")]
     public async Task Status_ReflectsAiServiceReadiness(bool aiReady, string expectedAiStatus)
     {
-        await using var factory = new GatewayFactory(aiReady);
+        await using var factory = new GatewayFactory(new FakeAiServiceClient(isReady: aiReady));
         using var client = factory.CreateClient();
 
         var status = await client.GetFromJsonAsync<StatusResponse>(new Uri("/api/status", UriKind.Relative));

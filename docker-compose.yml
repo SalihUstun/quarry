@@ -33,10 +33,14 @@ services:
     build: ./ai
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-quarry}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-quarry}
+      INTERNAL_TOKEN: ${INTERNAL_TOKEN:?set INTERNAL_TOKEN in .env}
+      UPLOADS_DIR: /data/uploads
       LLM_PROVIDER: ${LLM_PROVIDER:-openrouter}
-      LLM_MODEL: ${LLM_MODEL:-}
+      LLM_MODEL: ${LLM_MODEL:-z-ai/glm-5.3-flash}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+    volumes:
+      - uploads:/data/uploads:ro
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
       interval: 10s
@@ -50,8 +54,18 @@ services:
   gateway:
     build: ./gateway
     environment:
+      ConnectionStrings__Quarry: Host=postgres;Port=5432;Database=${POSTGRES_DB:-quarry};Username=${POSTGRES_USER:-quarry};Password=${POSTGRES_PASSWORD}
+      Auth__DevUserEmail: ${DEV_USER_EMAIL:?set DEV_USER_EMAIL in .env}
+      Auth__DevUserPassword: ${DEV_USER_PASSWORD:?set DEV_USER_PASSWORD in .env}
+      Jwt__SigningKey: ${JWT_SIGNING_KEY:?set JWT_SIGNING_KEY in .env}
       AiService__BaseUrl: http://ai:8000
+      AiService__InternalToken: ${INTERNAL_TOKEN}
+      Storage__UploadsPath: /data/uploads
+    volumes:
+      - uploads:/data/uploads
     depends_on:
+      migrate:
+        condition: service_completed_successfully
       ai:
         condition: service_healthy
     restart: unless-stopped
@@ -66,3 +80,4 @@ services:
 
 volumes:
   postgres-data:
+  uploads:

@@ -16,6 +16,7 @@ internal static class AiServiceRegistration
             var options = provider.GetRequiredService<IOptions<AiServiceOptions>>().Value;
             client.BaseAddress = new Uri(options.BaseUrl);
             client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
+            client.DefaultRequestHeaders.Add(AiServiceOptions.InternalTokenHeader, options.InternalToken);
         });
 
         return services;
