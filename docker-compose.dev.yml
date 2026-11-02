@@ -1,0 +1,12 @@
+services:
+  postgres:
+    ports:
+      - "5432:5432"
+
+  ai:
+    ports:
+      - "8000:8000"
+
+  gateway:
+    ports:
+      - "5080:8080"
