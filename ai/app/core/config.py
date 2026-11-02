@@ -18,6 +18,7 @@ class Settings(BaseSettings):
 
     llm_provider: Literal["openrouter", "ollama"] = "openrouter"
     llm_model: str = "z-ai/glm-5.3-flash"
+    llm_reasoning_effort: Literal["none", "minimal", "low", "medium", "high"] = "minimal"
     llm_timeout_seconds: float = 120.0
 
     embedding_model: str = "baai/bge-m3"

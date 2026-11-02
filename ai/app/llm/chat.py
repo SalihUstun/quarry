@@ -2,7 +2,7 @@ import json
 import time
 from collections.abc import AsyncIterator, Sequence
 from decimal import Decimal
-from typing import Any, Protocol
+from typing import Any, Literal, Protocol
 
 import httpx
 
@@ -35,9 +35,26 @@ async def _raise_for_status(response: httpx.Response, provider: str) -> None:
         raise ProviderError(f"{provider} request failed with {response.status_code}: {body}")
 
 
+ReasoningEffort = Literal["none", "minimal", "low", "medium", "high"]
+
+
+def reasoning_options(effort: ReasoningEffort) -> dict[str, Any]:
+    if effort == "none":
+        return {"enabled": False}
+    return {"effort": effort, "exclude": True}
+
+
 class OpenRouterChatModel:
-    def __init__(self, client: httpx.AsyncClient, base_url: str, api_key: str, model: str) -> None:
+    def __init__(
+        self,
+        client: httpx.AsyncClient,
+        base_url: str,
+        api_key: str,
+        model: str,
+        reasoning_effort: ReasoningEffort = "minimal",
+    ) -> None:
         self._client = client
+        self._reasoning = reasoning_options(reasoning_effort)
         self._url = f"{base_url.rstrip('/')}/chat/completions"
         self._api_key = api_key
         self._headers = {"Authorization": f"Bearer {api_key}"}
@@ -50,7 +67,7 @@ class OpenRouterChatModel:
             "model": self._model,
             "messages": _serialize(messages),
             "stream": True,
-            "reasoning": {"enabled": False},
+            "reasoning": self._reasoning,
             "usage": {"include": True},
         }
         usage: dict[str, Any] = {}

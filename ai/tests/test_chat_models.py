@@ -4,7 +4,12 @@ from decimal import Decimal
 import httpx
 import pytest
 
-from app.llm.chat import OllamaChatModel, OpenRouterChatModel
+from app.llm.chat import (
+    OllamaChatModel,
+    OpenRouterChatModel,
+    ReasoningEffort,
+    reasoning_options,
+)
 from app.llm.types import ChatEvent, ChatMessage, ProviderError, TextDelta, UsageReport
 
 pytestmark = pytest.mark.anyio
@@ -61,7 +66,7 @@ async def test_openrouter_streams_text_and_reports_usage() -> None:
     assert report.usage.cost_usd == Decimal("0.000004")
     body = json.loads(requests[0].content)
     assert body["stream"] is True
-    assert body["reasoning"] == {"enabled": False}
+    assert body["reasoning"] == {"effort": "minimal", "exclude": True}
 
 
 async def test_openrouter_error_status_raises_provider_error() -> None:
@@ -102,3 +107,15 @@ async def test_ollama_streams_ndjson_and_reports_token_counts() -> None:
     assert isinstance(report, UsageReport)
     assert (report.usage.input_tokens, report.usage.output_tokens) == (12, 2)
     assert report.usage.cost_usd == Decimal(0)
+
+
+@pytest.mark.parametrize(
+    ("effort", "expected"),
+    [
+        ("none", {"enabled": False}),
+        ("minimal", {"effort": "minimal", "exclude": True}),
+        ("high", {"effort": "high", "exclude": True}),
+    ],
+)
+def test_reasoning_options(effort: ReasoningEffort, expected: dict[str, object]) -> None:
+    assert reasoning_options(effort) == expected

@@ -33,6 +33,7 @@ def build_chat_model(settings: Settings, client: httpx.AsyncClient) -> ChatModel
         settings.openrouter_base_url,
         settings.openrouter_api_key.get_secret_value(),
         settings.llm_model,
+        settings.llm_reasoning_effort,
     )
 
 
