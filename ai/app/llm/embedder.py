@@ -6,6 +6,7 @@ from typing import Any, Protocol
 
 import httpx
 
+from app.llm.retry import RetryPolicy
 from app.llm.types import ProviderError, Usage, require_api_key
 
 
@@ -28,8 +29,10 @@ class OpenRouterEmbedder:
         model: str,
         dimensions: int,
         batch_size: int,
+        retry: RetryPolicy | None = None,
     ) -> None:
         self._client = client
+        self._retry = retry or RetryPolicy()
         self._url = f"{base_url.rstrip('/')}/embeddings"
         self._api_key = api_key
         self._headers = {"Authorization": f"Bearer {api_key}"}
@@ -71,18 +74,27 @@ class OpenRouterEmbedder:
         )
 
     async def _request(self, batch: list[str]) -> dict[str, Any]:
-        try:
-            response = await self._client.post(
-                self._url, headers=self._headers, json={"model": self._model, "input": batch}
-            )
-        except httpx.HTTPError as error:
-            raise ProviderError(f"Embedding request failed: {error}") from error
-        if response.status_code != httpx.codes.OK:
-            raise ProviderError(
-                f"Embedding request failed with {response.status_code}: {response.text[:200]}"
-            )
-        payload: dict[str, Any] = response.json()
-        return payload
+        attempt = 0
+        while True:
+            attempt += 1
+            try:
+                response = await self._client.post(
+                    self._url, headers=self._headers, json={"model": self._model, "input": batch}
+                )
+            except httpx.TransportError as error:
+                if not self._retry.should_retry(attempt):
+                    raise ProviderError(f"Embedding request failed: {error}") from error
+                await self._retry.wait(attempt)
+                continue
+
+            if response.status_code == httpx.codes.OK:
+                payload: dict[str, Any] = response.json()
+                return payload
+            if not self._retry.should_retry(attempt, response.status_code):
+                raise ProviderError(
+                    f"Embedding request failed with {response.status_code}: {response.text[:200]}"
+                )
+            await self._retry.wait(attempt, response)
 
     def _vectors(self, payload: dict[str, Any]) -> list[list[float]]:
         items = sorted(payload.get("data") or [], key=lambda item: item["index"])

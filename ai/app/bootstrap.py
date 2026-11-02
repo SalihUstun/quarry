@@ -12,6 +12,7 @@ from app.db.usage import UsageRepository
 from app.ingestion.chunker import ChunkingConfig
 from app.llm.chat import ChatModel, OllamaChatModel, OpenRouterChatModel
 from app.llm.embedder import OpenRouterEmbedder
+from app.llm.retry import RetryPolicy
 from app.services.ask import AskService
 from app.services.ingestion import IngestionService
 from app.services.protocols import DocumentIngestor, QuestionAnswerer
@@ -34,6 +35,7 @@ def build_chat_model(settings: Settings, client: httpx.AsyncClient) -> ChatModel
         settings.openrouter_api_key.get_secret_value(),
         settings.llm_model,
         settings.llm_reasoning_effort,
+        RetryPolicy(max_attempts=settings.llm_max_attempts),
     )
 
 
@@ -50,6 +52,7 @@ async def build_services(settings: Settings) -> AsyncIterator[AppServices]:
             settings.embedding_model,
             settings.embedding_dimensions,
             settings.embedding_batch_size,
+            RetryPolicy(max_attempts=settings.llm_max_attempts),
         )
         usage = UsageRepository(database)
         try:

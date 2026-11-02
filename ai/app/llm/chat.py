@@ -6,6 +6,7 @@ from typing import Any, Literal, Protocol
 
 import httpx
 
+from app.llm.retry import RetryPolicy
 from app.llm.types import (
     ChatEvent,
     ChatMessage,
@@ -52,8 +53,10 @@ class OpenRouterChatModel:
         api_key: str,
         model: str,
         reasoning_effort: ReasoningEffort = "minimal",
+        retry: RetryPolicy | None = None,
     ) -> None:
         self._client = client
+        self._retry = retry or RetryPolicy()
         self._reasoning = reasoning_options(reasoning_effort)
         self._url = f"{base_url.rstrip('/')}/chat/completions"
         self._api_key = api_key
@@ -71,20 +74,31 @@ class OpenRouterChatModel:
             "usage": {"include": True},
         }
         usage: dict[str, Any] = {}
+        attempt = 0
         try:
-            async with self._client.stream(
-                "POST", self._url, headers=self._headers, json=body
-            ) as response:
-                await _raise_for_status(response, "OpenRouter")
-                async for line in response.aiter_lines():
-                    payload = self._parse_line(line)
-                    if payload is None:
-                        continue
-                    for choice in payload.get("choices") or []:
-                        text = (choice.get("delta") or {}).get("content")
-                        if text:
-                            yield TextDelta(text)
-                    usage = payload.get("usage") or usage
+            while True:
+                attempt += 1
+                async with self._client.stream(
+                    "POST", self._url, headers=self._headers, json=body
+                ) as response:
+                    retryable = response.status_code != httpx.codes.OK and (
+                        self._retry.should_retry(attempt, response.status_code)
+                    )
+                    if retryable:
+                        await response.aread()
+                    else:
+                        await _raise_for_status(response, "OpenRouter")
+                        async for line in response.aiter_lines():
+                            payload = self._parse_line(line)
+                            if payload is None:
+                                continue
+                            for choice in payload.get("choices") or []:
+                                text = (choice.get("delta") or {}).get("content")
+                                if text:
+                                    yield TextDelta(text)
+                            usage = payload.get("usage") or usage
+                        break
+                await self._retry.wait(attempt, response)
         except httpx.HTTPError as error:
             raise ProviderError(f"OpenRouter stream failed: {error}") from error
 
