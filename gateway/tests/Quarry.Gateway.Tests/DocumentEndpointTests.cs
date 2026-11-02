@@ -31,7 +31,7 @@ public sealed class DocumentEndpointTests(PostgresFixture postgres) : IAsyncLife
         Assert.Equal("İzin Politikası.pdf", document.FileName);
         Assert.Equal("pending", document.Status);
         Assert.Equal(MinimalPdf.Length, document.SizeBytes);
-        Assert.Equal([document.Id], factory.AiService.IngestionRequests);
+        Assert.Equal([document.Id], factory.IngestionQueue.Enqueued);
 
         var storedPath = Path.Combine(factory.UploadsPath, GatewayFactory.TenantId.ToString(), $"{document.Id}.pdf");
         Assert.Equal(MinimalPdf, await File.ReadAllBytesAsync(storedPath));
@@ -51,14 +51,14 @@ public sealed class DocumentEndpointTests(PostgresFixture postgres) : IAsyncLife
         using var response = await client.PostAsync(DocumentsUri, FileContent(fileName, Encoding.UTF8.GetBytes(content)));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        Assert.Empty(factory.AiService.IngestionRequests);
+        Assert.Empty(factory.IngestionQueue.Enqueued);
     }
 
     [Fact]
-    public async Task Upload_WhenAiServiceUnavailable_MarksDocumentFailed()
+    public async Task Upload_WhenQueueUnavailable_MarksDocumentFailed()
     {
         await using var factory = new GatewayFactory(
-            new FakeAiServiceClient(acceptsIngestion: false), postgres.ConnectionString);
+            connectionString: postgres.ConnectionString, ingestionQueue: new FakeIngestionQueue(accepts: false));
         using var client = await factory.CreateAuthenticatedClientAsync();
 
         using var response = await client.PostAsync(DocumentsUri, FileContent("notlar.txt", "Şirket notları"u8.ToArray()));
@@ -67,6 +67,21 @@ public sealed class DocumentEndpointTests(PostgresFixture postgres) : IAsyncLife
         Assert.NotNull(document);
         Assert.Equal("failed", document.Status);
         Assert.NotNull(document.Error);
+    }
+
+    [Fact]
+    public async Task Upload_Docx_IsAcceptedWithWordContentType()
+    {
+        await using var factory = new GatewayFactory(connectionString: postgres.ConnectionString);
+        using var client = await factory.CreateAuthenticatedClientAsync();
+        byte[] zipHeader = [0x50, 0x4B, 0x03, 0x04, 0x14, 0x00];
+
+        using var response = await client.PostAsync(DocumentsUri, FileContent("politika.docx", zipHeader));
+
+        Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+        var contentType = await postgres.ScalarAsync<string>(
+            "SELECT content_type FROM documents WHERE file_name = 'politika.docx'");
+        Assert.Equal("application/vnd.openxmlformats-officedocument.wordprocessingml.document", contentType);
     }
 
     [Fact]

@@ -4,19 +4,23 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Quarry.Gateway.Infrastructure.AiService;
+using Quarry.Gateway.Infrastructure.Messaging;
 
 namespace Quarry.Gateway.Tests;
 
-internal sealed class FakeAiServiceClient(bool isReady = true, bool acceptsIngestion = true) : IAiServiceClient
+internal sealed class FakeAiServiceClient(bool isReady = true) : IAiServiceClient
 {
-    public List<Guid> IngestionRequests { get; } = [];
-
     public Task<bool> IsReadyAsync(CancellationToken cancellationToken) => Task.FromResult(isReady);
+}
 
-    public Task<bool> RequestIngestionAsync(Guid documentId, CancellationToken cancellationToken)
+internal sealed class FakeIngestionQueue(bool accepts = true) : IIngestionQueue
+{
+    public List<Guid> Enqueued { get; } = [];
+
+    public Task<bool> EnqueueAsync(Guid documentId, CancellationToken cancellationToken)
     {
-        IngestionRequests.Add(documentId);
-        return Task.FromResult(acceptsIngestion);
+        Enqueued.Add(documentId);
+        return Task.FromResult(accepts);
     }
 }
 
@@ -28,14 +32,20 @@ internal sealed class GatewayFactory : WebApplicationFactory<Program>
 
     private readonly string _connectionString;
 
-    public GatewayFactory(FakeAiServiceClient? aiService = null, string? connectionString = null)
+    public GatewayFactory(
+        FakeAiServiceClient? aiService = null,
+        string? connectionString = null,
+        FakeIngestionQueue? ingestionQueue = null)
     {
         AiService = aiService ?? new FakeAiServiceClient();
+        IngestionQueue = ingestionQueue ?? new FakeIngestionQueue();
         _connectionString = connectionString ?? "Host=unused;Database=unused";
         UploadsPath = Directory.CreateTempSubdirectory("quarry-uploads-").FullName;
     }
 
     public FakeAiServiceClient AiService { get; }
+
+    public FakeIngestionQueue IngestionQueue { get; }
 
     public string UploadsPath { get; }
 
@@ -60,10 +70,13 @@ internal sealed class GatewayFactory : WebApplicationFactory<Program>
         builder.UseSetting("AiService:BaseUrl", "http://ai.test");
         builder.UseSetting("AiService:InternalToken", "test-internal-token");
         builder.UseSetting("Storage:UploadsPath", UploadsPath);
+        builder.UseSetting("RabbitMq:Url", "amqp://guest:guest@rabbitmq.test:5672");
         builder.ConfigureServices(services =>
         {
             services.RemoveAll<IAiServiceClient>();
             services.AddSingleton<IAiServiceClient>(AiService);
+            services.RemoveAll<IIngestionQueue>();
+            services.AddSingleton<IIngestionQueue>(IngestionQueue);
         });
     }
 

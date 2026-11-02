@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Quarry.Gateway.Features.Auth;
-using Quarry.Gateway.Infrastructure.AiService;
+using Quarry.Gateway.Infrastructure.Messaging;
 using Quarry.Gateway.Infrastructure.Persistence;
 using Quarry.Gateway.Infrastructure.Storage;
 
@@ -29,7 +29,7 @@ internal sealed record DocumentResponse(
 
 internal static class DocumentEndpoints
 {
-    public const string ProcessingUnavailableError = "İşleme servisine ulaşılamadı. Lütfen tekrar yükleyin.";
+    public const string QueueUnavailableError = "İşleme kuyruğuna ulaşılamadı. Lütfen tekrar yükleyin.";
 
     public static IEndpointRouteBuilder MapDocumentEndpoints(this IEndpointRouteBuilder routes)
     {
@@ -66,7 +66,7 @@ internal static class DocumentEndpoints
         HttpContext context,
         QuarryDbContext db,
         IFileStorage storage,
-        IAiServiceClient aiService,
+        IIngestionQueue ingestionQueue,
         IOptions<StorageOptions> storageOptions,
         TimeProvider timeProvider,
         CancellationToken cancellationToken)
@@ -79,7 +79,7 @@ internal static class DocumentEndpoints
         var format = await UploadValidator.DetectAsync(file, cancellationToken);
         if (format is null)
         {
-            return BadRequest("Sadece PDF ve UTF-8 metin (.txt) dosyaları desteklenir.");
+            return BadRequest("Sadece PDF, Word (.docx) ve UTF-8 metin (.txt) dosyaları desteklenir.");
         }
 
         var user = CurrentUser.Required(context.User);
@@ -114,10 +114,10 @@ internal static class DocumentEndpoints
             throw;
         }
 
-        if (!await aiService.RequestIngestionAsync(documentId, cancellationToken))
+        if (!await ingestionQueue.EnqueueAsync(documentId, cancellationToken))
         {
             document.Status = DocumentStatus.Failed;
-            document.Error = ProcessingUnavailableError;
+            document.Error = QueueUnavailableError;
             document.UpdatedAt = timeProvider.GetUtcNow();
             await db.SaveChangesAsync(cancellationToken);
         }

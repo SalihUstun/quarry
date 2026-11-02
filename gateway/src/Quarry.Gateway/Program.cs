@@ -4,6 +4,7 @@ using Quarry.Gateway.Features.Auth;
 using Quarry.Gateway.Features.Documents;
 using Quarry.Gateway.Features.Status;
 using Quarry.Gateway.Infrastructure.AiService;
+using Quarry.Gateway.Infrastructure.Messaging;
 using Quarry.Gateway.Infrastructure.Persistence;
 using Quarry.Gateway.Infrastructure.Storage;
 
@@ -13,6 +14,7 @@ builder.Services.AddProblemDetails();
 builder.Services.AddHealthChecks();
 builder.Services.AddQuarryAuth();
 builder.Services.AddAiService();
+builder.Services.AddIngestionQueue();
 builder.Services.AddAskProxy(builder.Configuration);
 builder.Services.AddDbContext<QuarryDbContext>(options => options
     .UseNpgsql(builder.Configuration.GetConnectionString("Quarry"))

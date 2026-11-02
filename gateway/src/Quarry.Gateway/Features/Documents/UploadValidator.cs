@@ -8,8 +8,11 @@ internal static class UploadValidator
 {
     public static readonly SupportedFormat Pdf = new(".pdf", "application/pdf");
     public static readonly SupportedFormat PlainText = new(".txt", "text/plain");
+    public static readonly SupportedFormat Docx = new(
+        ".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
 
     private static readonly byte[] PdfSignature = "%PDF-"u8.ToArray();
+    private static readonly byte[] ZipSignature = [0x50, 0x4B, 0x03, 0x04];
     private const int SniffLength = 8192;
 
     public static async Task<SupportedFormat?> DetectAsync(IFormFile file, CancellationToken cancellationToken)
@@ -21,6 +24,7 @@ internal static class UploadValidator
         {
             ".pdf" when header.AsSpan().StartsWith(PdfSignature) => Pdf,
             ".txt" when IsUtf8Text(header) => PlainText,
+            ".docx" when header.AsSpan().StartsWith(ZipSignature) => Docx,
             _ => null,
         };
     }
