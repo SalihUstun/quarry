@@ -1,25 +1,28 @@
-from collections.abc import AsyncIterator
-from contextlib import asynccontextmanager
+from collections.abc import AsyncIterator, Callable
+from contextlib import AbstractAsyncContextManager, asynccontextmanager
 
 from fastapi import FastAPI
 
-from app.api import health
+from app.api import ask, health, internal
+from app.bootstrap import AppServices, build_services
 from app.core.config import Settings
-from app.db.database import Database, PostgresDatabase
+
+ServicesFactory = Callable[[], AbstractAsyncContextManager[AppServices]]
 
 
-def create_app(database: Database | None = None) -> FastAPI:
-    resolved_database = database or PostgresDatabase(Settings().database_url)
+def create_app(services_factory: ServicesFactory | None = None) -> FastAPI:
+    factory = services_factory or (lambda: build_services(Settings()))
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-        await resolved_database.open()
-        app.state.database = resolved_database
-        yield
-        await resolved_database.close()
+        async with factory() as services:
+            app.state.services = services
+            yield
 
     app = FastAPI(title="Quarry AI Service", lifespan=lifespan)
     app.include_router(health.router)
+    app.include_router(internal.router)
+    app.include_router(ask.router)
     return app
 
 
