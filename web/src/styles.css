@@ -4,8 +4,12 @@
   --muted: #6b6b70;
   --card: #ffffff;
   --border: #e4e4e0;
+  --accent: #2f5bd3;
+  --accent-fg: #ffffff;
   --ok: #1f8a4c;
+  --warn: #a66300;
   --bad: #c0392b;
+  --question-bg: #eef2fc;
   font-family:
     system-ui,
     -apple-system,
@@ -23,9 +27,17 @@
     --muted: #9a9aa0;
     --card: #1f1f22;
     --border: #2e2e33;
+    --accent: #7c9cf5;
+    --accent-fg: #0d1430;
     --ok: #4cc27f;
+    --warn: #e0a33a;
     --bad: #ef6b5b;
+    --question-bg: #232a3d;
   }
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
@@ -33,28 +45,236 @@ body {
   background: var(--bg);
 }
 
-.app {
-  max-width: 40rem;
-  margin: 0 auto;
-  padding: 3rem 1rem;
+h1,
+h2 {
+  margin: 0;
 }
 
-.subtitle {
+h2 {
+  font-size: 1.1rem;
+}
+
+.app {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.subtitle,
+.muted {
   color: var(--muted);
+}
+
+.muted {
+  display: block;
+  font-size: 0.875rem;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.card {
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--card);
+  padding: 1.25rem;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+button {
+  font: inherit;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--fg);
+  border-color: var(--border);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+input {
+  font: inherit;
+  color: var(--fg);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  width: 100%;
+}
+
+[role='alert'],
+.error-text {
+  color: var(--bad);
+  font-size: 0.875rem;
+}
+
+.login-form {
+  max-width: 24rem;
+  margin: 3rem auto;
+  display: grid;
+  gap: 1rem;
+}
+
+.login-form label {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(16rem, 22rem) 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 760px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+.document-list,
+.sources {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.document-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-top: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+
+.badge {
+  align-self: flex-start;
+  font-size: 0.75rem;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+}
+
+.badge-ready {
+  color: var(--ok);
+}
+
+.badge-pending,
+.badge-processing {
+  color: var(--warn);
+}
+
+.badge-failed {
+  color: var(--bad);
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 28rem;
+}
+
+.exchanges {
+  flex: 1;
+  display: grid;
+  gap: 1.25rem;
+  align-content: start;
+}
+
+.exchange {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.question {
+  justify-self: end;
+  background: var(--question-bg);
+  border-radius: 0.75rem;
+  padding: 0.5rem 0.85rem;
+  margin: 0;
+  max-width: 85%;
+}
+
+.answer {
+  margin: 0;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
+.source-card {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  margin-top: 0.4rem;
+}
+
+.source-card p {
+  margin: 0.25rem 0 0;
+}
+
+.source-number {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.ask-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+footer {
+  margin-top: 2rem;
+  max-width: 24rem;
 }
 
 .status-list {
   list-style: none;
   padding: 0;
+  margin: 0;
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   background: var(--card);
+  font-size: 0.875rem;
 }
 
 .status-row {
   display: flex;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0.85rem;
 }
 
 .status-row + .status-row {
